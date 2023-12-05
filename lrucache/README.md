@@ -32,7 +32,7 @@ func getData() DataStruct {
     if dc == nil {
         // fetch data to origin url and validate data error
         ............
-        // stora origin response to data
+        // store origin response to data
         ............
 
         // then set data to cache if origin return success
