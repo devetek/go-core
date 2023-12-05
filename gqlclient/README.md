@@ -1,3 +1,3 @@
 ## Description
 
-Thanks to https://github.com/machinebox/graphql
+This package copy from https://github.com/machinebox/graphql, because need adjustment for devetek requirements
