@@ -7,6 +7,9 @@ import (
 	"sync"
 
 	"github.com/gobuffalo/plush"
+	"github.com/tdewolff/minify/v2"
+	htmlminify "github.com/tdewolff/minify/v2/html"
+	svgminify "github.com/tdewolff/minify/v2/svg"
 )
 
 type Engine struct {
@@ -53,9 +56,22 @@ func (e *Engine) HTML(w http.ResponseWriter) *Page {
 	p := &Page{
 		fs:     e.templates,
 		writer: w,
+		minify: minify.New(),
 
 		defaultLayout: e.defaultLayout,
 	}
+
+	// minifier config
+	p.minify.Add("text/html", &htmlminify.Minifier{
+		KeepWhitespace:      false,
+		KeepDefaultAttrVals: true,
+		KeepDocumentTags:    true,
+		KeepEndTags:         true,
+		KeepQuotes:          true,
+	})
+	p.minify.Add("image/svg+xml", &svgminify.Minifier{
+		KeepComments: false,
+	})
 
 	ctx := plush.NewContext()
 	for k, v := range e.values {
