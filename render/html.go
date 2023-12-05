@@ -8,12 +8,14 @@ import (
 	"strings"
 
 	"github.com/gobuffalo/plush"
+	"github.com/tdewolff/minify/v2"
 )
 
 type Page struct {
 	context *plush.Context
 	writer  http.ResponseWriter
 	fs      fs.FS
+	minify  *minify.M
 
 	defaultLayout string
 }
@@ -50,17 +52,12 @@ func (p *Page) Render(page string) error {
 		return err
 	}
 
-	minHtml, _ := minifyHtml(html)
+	shtml, err := p.minify.String("text/html", html)
 	if err != nil {
-
-		_, err = p.writer.Write([]byte(html))
-
-		if err != nil {
-			return fmt.Errorf("could not write to response: %w", err)
-		}
+		return fmt.Errorf("failed to minify html: %w", err)
 	}
 
-	_, err = p.writer.Write([]byte(minHtml))
+	_, err = p.writer.Write([]byte(shtml))
 	if err != nil {
 		return fmt.Errorf("could not write to response: %w", err)
 	}
@@ -90,17 +87,12 @@ func (p *Page) RenderWithLayout(page, layout string) error {
 		return err
 	}
 
-	minHtml, _ := minifyHtml(html)
+	shtml, err := p.minify.String("text/html", html)
 	if err != nil {
-
-		_, err = p.writer.Write([]byte(html))
-
-		if err != nil {
-			return fmt.Errorf("could not write to response: %w", err)
-		}
+		return fmt.Errorf("failed to minify html: %w", err)
 	}
 
-	_, err = p.writer.Write([]byte(minHtml))
+	_, err = p.writer.Write([]byte(shtml))
 	if err != nil {
 		return fmt.Errorf("could not write to response: %w", err)
 	}
@@ -120,16 +112,12 @@ func (p *Page) RenderClean(name string) error {
 		return err
 	}
 
-	minHtml, _ := minifyHtml(html)
+	shtml, err := p.minify.String("text/html", html)
 	if err != nil {
-
-		_, err = p.writer.Write([]byte(html))
-
-		if err != nil {
-			return fmt.Errorf("could not write to response: %w", err)
-		}
+		return fmt.Errorf("failed to minify html: %w", err)
 	}
-	_, err = p.writer.Write([]byte(minHtml))
+
+	_, err = p.writer.Write([]byte(shtml))
 	if err != nil {
 		return fmt.Errorf("could not write to response: %w", err)
 	}
