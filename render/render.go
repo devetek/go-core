@@ -16,9 +16,10 @@ type Engine struct {
 	templates     fs.FS
 	defaultLayout string
 
-	moot    sync.Mutex
-	helpers template.FuncMap
-	values  map[string]any
+	moot     sync.Mutex
+	helpers  template.FuncMap
+	values   map[string]any
+	minifier MinifierOption
 }
 
 func NewEngine(fs fs.FS, options ...Option) *Engine {
@@ -54,24 +55,26 @@ func (e *Engine) SetHelper(key string, value any) {
 
 func (e *Engine) HTML(w http.ResponseWriter) *Page {
 	p := &Page{
-		fs:     e.templates,
-		writer: w,
-		minify: minify.New(),
-
+		fs:            e.templates,
+		writer:        w,
+		minify:        minify.New(),
+		minifyEnable:  e.minifier.Enable,
 		defaultLayout: e.defaultLayout,
 	}
 
-	// minifier config
-	p.minify.Add("text/html", &htmlminify.Minifier{
-		KeepWhitespace:      false,
-		KeepDefaultAttrVals: true,
-		KeepDocumentTags:    true,
-		KeepEndTags:         true,
-		KeepQuotes:          true,
-	})
-	p.minify.Add("image/svg+xml", &svgminify.Minifier{
-		KeepComments: false,
-	})
+	if e.minifier.Enable {
+		// minifier config
+		p.minify.Add("text/html", &htmlminify.Minifier{
+			KeepWhitespace:      e.minifier.HTML.KeepWhitespace,
+			KeepDefaultAttrVals: e.minifier.HTML.KeepDefaultAttrVals,
+			KeepDocumentTags:    e.minifier.HTML.KeepDocumentTags,
+			KeepEndTags:         e.minifier.HTML.KeepEndTags,
+			KeepQuotes:          e.minifier.HTML.KeepQuotes,
+		})
+		p.minify.Add("image/svg+xml", &svgminify.Minifier{
+			KeepComments: false,
+		})
+	}
 
 	ctx := plush.NewContext()
 	for k, v := range e.values {
