@@ -1,3 +1,2 @@
-## Description
-
-This package copy from https://github.com/machinebox/graphql, because need adjustment for devetek requirements
+> Blockquote
+This package will be deprecated in the next release. Merge to new package gql, please check folder `gql`.

@@ -1,3 +1,2 @@
-## Description
-
-It must move to shared package, because we already have model package in internal. Currently this still stay in specific app scope
+> Blockquote
+This package will be deprecated in the next release. Merge to new package gql, please check folder `gql`.
