@@ -63,6 +63,8 @@ func (p *Page) Render(page string) error {
 		if err != nil {
 			return fmt.Errorf("could not write to response minify: %w", err)
 		}
+
+		return nil
 	}
 
 	_, err = p.writer.Write([]byte(html))
@@ -105,6 +107,8 @@ func (p *Page) RenderWithLayout(page, layout string) error {
 		if err != nil {
 			return fmt.Errorf("could not write to response minify: %w", err)
 		}
+
+		return nil
 	}
 
 	_, err = p.writer.Write([]byte(html))
@@ -137,6 +141,8 @@ func (p *Page) RenderClean(name string) error {
 		if err != nil {
 			return fmt.Errorf("could not write to response minify: %w", err)
 		}
+
+		return nil
 	}
 
 	_, err = p.writer.Write([]byte(html))
