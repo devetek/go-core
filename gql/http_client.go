@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"mime/multipart"
 	"net/http"
 
@@ -27,6 +26,7 @@ type Client struct {
 	//  client.Log = func(s string) { log.Println(s) }
 	Log func(s string)
 
+	// Debug to print gql activity
 	Debug bool
 }
 
@@ -54,7 +54,7 @@ func (c *Client) logf(format string, args ...interface{}) {
 // Pass in a nil response object to skip response parsing.
 // If the request fails or the server returns an error, the first error
 // will be returned.
-func (c *Client) Run(ctx context.Context, req *Request, resp any) error {
+func (c *Client) Run(ctx context.Context, req *Request, data any) error {
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
@@ -64,12 +64,12 @@ func (c *Client) Run(ctx context.Context, req *Request, resp any) error {
 		return errors.New("cannot send files with PostFields option")
 	}
 	if c.useMultipartForm {
-		return c.runWithPostFields(ctx, req, resp)
+		return c.runWithPostFields(ctx, req, data)
 	}
-	return c.runWithJSON(ctx, req, resp)
+	return c.runWithJSON(ctx, req, data)
 }
 
-func (c *Client) runWithJSON(ctx context.Context, req *Request, resp any) error {
+func (c *Client) runWithJSON(ctx context.Context, req *Request, data any) error {
 	var requestBody bytes.Buffer
 	reqBodyObject := struct {
 		Query     string                 `json:"query"`
@@ -81,10 +81,6 @@ func (c *Client) runWithJSON(ctx context.Context, req *Request, resp any) error 
 	if err := json.NewEncoder(&requestBody).Encode(reqBodyObject); err != nil {
 		return errors.Wrap(err, "encode body")
 	}
-
-	log.Println("resprespresp")
-	log.Println(resp)
-	log.Println("resprespresp")
 
 	if c.Debug {
 		c.logf(">> variables: %v", req.vars)
@@ -113,7 +109,7 @@ func (c *Client) runWithJSON(ctx context.Context, req *Request, resp any) error 
 
 	defer res.Body.Close()
 
-	err = json.NewDecoder(res.Body).Decode(&resp)
+	err = json.NewDecoder(res.Body).Decode(&data)
 	if err != nil {
 		return err
 	}
@@ -121,7 +117,7 @@ func (c *Client) runWithJSON(ctx context.Context, req *Request, resp any) error 
 	return nil
 }
 
-func (c *Client) runWithPostFields(ctx context.Context, req *Request, resp any) error {
+func (c *Client) runWithPostFields(ctx context.Context, req *Request, data any) error {
 	var requestBody bytes.Buffer
 	writer := multipart.NewWriter(&requestBody)
 	if err := writer.WriteField("query", req.q); err != nil {
@@ -156,8 +152,8 @@ func (c *Client) runWithPostFields(ctx context.Context, req *Request, resp any) 
 		c.logf(">> query: %s", req.q)
 	}
 
-	gr := &graphResponse{
-		Data: resp,
+	gr := &gqlResponse{
+		Data: data,
 	}
 	r, err := http.NewRequest(http.MethodPost, c.endpoint, &requestBody)
 	if err != nil {
@@ -182,6 +178,7 @@ func (c *Client) runWithPostFields(ctx context.Context, req *Request, resp any) 
 		return err
 	}
 	defer res.Body.Close()
+
 	var buf bytes.Buffer
 	if _, err := io.Copy(&buf, res.Body); err != nil {
 		return errors.Wrap(err, "reading body")

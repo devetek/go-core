@@ -1,14 +1,14 @@
 package gql
 
-type graphResponse struct {
-	Data   interface{} `json:"data"`
-	Errors []graphErr
+type gqlResponse struct {
+	Data   any `json:"data"`
+	Errors []gqlError
 }
 
-type graphErr struct {
+type gqlError struct {
 	Message string
 }
 
-func (e graphErr) Error() string {
+func (e gqlError) Error() string {
 	return "graphql: " + e.Message
 }

@@ -57,7 +57,7 @@ func main() {
 
 	gqlCall := gql.NewRequest(useQuery)
 
-	err = gqlHttpClient.Run(context.Background(), gqlCall, generalSetting)
+	err = gqlHttpClient.Run(context.Background(), gqlCall, &generalSetting)
 	if err != nil {
 		log.Panicln(err)
 	}
