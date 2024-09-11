@@ -1,6 +1,6 @@
 ## Description
 
-Golang graphql client implementation, to simplify interact with graphql query using file .graphql. Check formder example for the implementation.
+Golang graphql client implementation, to simplify interact with graphql query using file .graphql. Check folder example for detail.
 
 ## Getting Started
 
