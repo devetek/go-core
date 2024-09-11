@@ -1,23 +1,3 @@
-## Description
-
-Golang graphql client implementation, to simplify interact with graphql query using file .graphql. Check formder example for the implementation.
-
-## Getting Started
-
-### Installation
-To start using gql, install Go and run go get:
-```sh
-go get -u github.com/devetek/go-core
-```
-
-### Basic
-Import gql into your application to access its gql capabilities
-```sh
-"github.com/devetek/go-core/gql"
-```
-
-### Usage
-```sh
 package main
 
 import (
@@ -63,4 +43,3 @@ func main() {
 
 	log.Println("Gql Response:", hello)
 }
-```

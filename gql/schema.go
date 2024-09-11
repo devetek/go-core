@@ -10,7 +10,7 @@ type Graphql struct {
 	fs fs.FS
 }
 
-func NewModel(fs fs.FS) *Graphql {
+func NewSchema(fs fs.FS) *Graphql {
 	e := &Graphql{
 		fs: fs,
 	}
