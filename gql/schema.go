@@ -6,19 +6,19 @@ import (
 	"io/fs"
 )
 
-type Graphql struct {
+type Schema struct {
 	fs fs.FS
 }
 
-func NewSchema(fs fs.FS) *Graphql {
-	e := &Graphql{
+func NewSchema(fs fs.FS) *Schema {
+	e := &Schema{
 		fs: fs,
 	}
 
 	return e
 }
 
-func (p *Graphql) Query(name string) (string, error) {
+func (p *Schema) Query(name string) (string, error) {
 	px, err := p.fs.Open(name)
 	if err != nil {
 		return "", fmt.Errorf("[gql.Query] - error on p.fs.Open: %w", err)
