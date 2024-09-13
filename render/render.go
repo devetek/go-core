@@ -12,6 +12,10 @@ import (
 	svgminify "github.com/tdewolff/minify/v2/svg"
 )
 
+type key string
+
+const CTX_KEY key = "renderer"
+
 type Engine struct {
 	templates     fs.FS
 	defaultLayout string

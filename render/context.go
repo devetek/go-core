@@ -5,7 +5,7 @@ import (
 )
 
 func Context(ctx context.Context) *Page {
-	page := ctx.Value("renderer").(*Page)
+	page := ctx.Value(CTX_KEY).(*Page)
 
 	return page
 }
