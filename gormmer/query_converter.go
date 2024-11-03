@@ -2,7 +2,6 @@ package gormmer
 
 import (
 	"net/url"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -36,12 +35,16 @@ func ConvertQueryToFilter(url *url.URL, allowFilterQuery []string) map[string]st
 	for key, val := range url.Query() {
 		for _, allowKey := range allowFilterQuery {
 			if allowKey == key {
-				isNumeric := regexp.MustCompile(`\d`).MatchString(val[0])
-
-				if isNumeric {
+				_, err := strconv.Atoi(val[0])
+				if err == nil {
 					filter[key+" = ?"] = val[0]
 				} else {
-					filter[key+" LIKE ?"] = "%" + val[0] + "%"
+					_, err := strconv.ParseBool(val[0])
+					if err == nil {
+						filter[key+" = ?"] = val[0]
+					} else {
+						filter[key+" LIKE ?"] = "%" + val[0] + "%"
+					}
 				}
 			}
 		}
