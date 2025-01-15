@@ -25,8 +25,8 @@ func main() {
 		jsonerr.WithCaller(true),
 		jsonerr.WithAlwaysPrint(true),
 	)
-
-    var filename = "./my-file-does-not-exist"
+	
+	var filename = "./my-file-does-not-exist"
 	err := getFileContent(filename, Logger)
 	if err != nil {
 		Logger.Create(jsonerr.NewError{
