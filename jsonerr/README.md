@@ -23,7 +23,7 @@ func main() {
 	// init logger instance
 	Logger := jsonerr.New(
 		jsonerr.WithCaller(true),
-        jsonerr.WithAlwaysPrint(true),
+		jsonerr.WithAlwaysPrint(true),
 	)
 
     var filename = "./my-file-does-not-exist"
